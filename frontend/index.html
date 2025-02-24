@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP/2 Check</title>
+</head>
+<body>
+    <h1>Checking HTTP/2 Status...</h1>
+    <p id="status">Waiting for response...</p>
+
+    <script>
+        async function checkServers() {
+            const http1Url = "http://localhost:3000";
+            const http2Url = "https://localhost:3001";
+
+            let http1Success = false;
+            let http2Success = false;
+
+            try {
+                const http1Response = await fetch(http1Url);
+                if (http1Response.ok) http1Success = true;
+            } catch (err) {
+                console.warn("HTTP/1.1 request failed:", err);
+            }
+
+            try {
+                const http2Response = await fetch(http2Url);
+                if (http2Response.ok) http2Success = true;
+            } catch (err) {
+                console.warn("HTTP/2 request failed:", err);
+            }
+
+            // Update UI
+            const statusElement = document.getElementById("status");
+            if (http2Success) {
+                statusElement.textContent = "HTTP/2 working!";
+                statusElement.style.color = "green";
+            } else if (http1Success) {
+                statusElement.textContent = "HTTP/2 not working.";
+                statusElement.style.color = "red";
+            } else {
+                statusElement.textContent = "Both servers are unreachable!";
+                statusElement.style.color = "gray";
+            }
+        }
+
+        checkServers();
+    </script>
+</body>
+</html>
+
