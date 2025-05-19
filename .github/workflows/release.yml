@@ -68,7 +68,7 @@ jobs:
         run: |
           aws sqs send-message \
             --queue-url "$SQS_QUEUE_URL" \
-            --message-body '{"image_name":"$IMAGE_NAME","image_tag":"$IMAGE_TAG", "deploy_time_seconds": "30"}'
+            --message-body "{\"image_name\":\"${{ env.IMAGE_NAME_BACKEND }}\",\"image_tag\":\"${{ steps.vars.outputs.tag }}\",\"deploy_time_seconds\":\"30\"}"
       - name: Build and push frontend image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
@@ -88,5 +88,5 @@ jobs:
         run: |
           aws sqs send-message \
             --queue-url "$SQS_QUEUE_URL" \
-            --message-body '{"image_name":"$IMAGE_NAME","image_tag":"$IMAGE_TAG", "deploy_time_seconds": "30"}'
+            --message-body "{\"image_name\":\"${{ env.IMAGE_NAME_FRONTEND }}\",\"image_tag\":\"${{ steps.vars.outputs.tag }}\",\"deploy_time_seconds\":\"30\"}"
 
