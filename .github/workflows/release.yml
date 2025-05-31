@@ -57,6 +57,18 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.vars.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:latest
+      - name: Send SQS Message backend
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SQS_QUEUE_URL: ${{ secrets.SQS_QUEUE_URL }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME_BACKEND }}
+          IMAGE_TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          aws sqs send-message \
+            --queue-url "$SQS_QUEUE_URL" \
+            --message-body "{\"ImageName\":\"ghcr.io/${{ env.IMAGE_NAME_BACKEND }}\",\"ImageTag\":\"${{ steps.vars.outputs.tag }}\",\"DeployTimeSeconds\":\"30\"}"
       - name: Build and push frontend image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
@@ -65,3 +77,16 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ steps.vars.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
+      - name: Send SQS Message frontend 
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SQS_QUEUE_URL: ${{ secrets.SQS_QUEUE_URL }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME_FRONTEND }}
+          IMAGE_TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          aws sqs send-message \
+            --queue-url "$SQS_QUEUE_URL" \
+            --message-body "{\"ImageName\":\"ghcr.io/${{ env.IMAGE_NAME_FRONTEND }}\",\"ImageTag\":\"${{ steps.vars.outputs.tag }}\",\"DeployTimeSeconds\":\"30\"}"
+
