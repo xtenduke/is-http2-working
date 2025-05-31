@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTTP/2 Check</title>
+    <style>
+        body {
+            font-family: monospace;
+        }
+    </style>
 </head>
 <body>
     <h1>Checking HTTP/2 Status...</h1>
@@ -34,10 +39,10 @@
             // Update UI
             const statusElement = document.getElementById("status");
             if (http2Success) {
-                statusElement.textContent = "HTTP/2 working!";
+                statusElement.textContent = "HTTP/2 is working!";
                 statusElement.style.color = "green";
             } else if (http1Success) {
-                statusElement.textContent = "HTTP/2 not working.";
+                statusElement.textContent = "HTTP/2 is not working.";
                 statusElement.style.color = "red";
             } else {
                 statusElement.textContent = "Both servers are unreachable!";
@@ -49,4 +54,3 @@
     </script>
 </body>
 </html>
-
